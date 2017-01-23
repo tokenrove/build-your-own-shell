@@ -1,0 +1,72 @@
+#!/bin/sh
+#
+# Given a path to your shell, runs the tests for each stage
+# sequentially until one fails, and prints the detailed results for
+# the failing set.
+
+tput() { command tput "$@" 2>/dev/null; }
+attr() { tput AF "$1" || tput setaf "$1"; }
+red() { attr 1; }
+green() { attr 2; }
+yellow() { attr 3; }
+reset() { tput me || tput sgr0; }
+die() { echo "$@"; exit 1; }
+
+if [ $# -lt 1 -o $# -gt 3 ]; then
+    die "Usage: validate PATH_TO_SHELL [STAGE] [NUMBER]"
+fi
+
+sh_under_test=$(which "$1")
+
+if [ ! -x "$sh_under_test" ]; then
+    die "Can't execute $sh_under_test; not running any tests."
+fi
+
+[ -x "$(which expect)" ] || die '"expect" is missing'
+
+us=$(readlink -f "$0")
+byos=$(dirname "$us")
+
+if [ ! -d "$byos/stage_1" ]; then
+    die "Something went wrong; stage_1 missing in $byos."
+fi
+
+# build helpers
+for c in "$byos"/helpers/*.c; do
+    exe="$byos"/helpers/"$(basename "$c" .c)"
+    if [ ! -x "$exe" -o "$c" -nt "$exe" ]; then "$c"; fi
+done
+
+log=$(mktemp -t byos-validate.XXXXXX)
+trap 'rm -f $log' EXIT
+
+do_stage() {
+    stage=$1
+    short=$(basename "$stage")
+    if timeout 30s prove --rules='seq=*.t' -e "$byos/helpers/harness.tcl" "$stage"/*.t :: "$sh_under_test"; then
+        echo "$(green)$short$(reset) "
+        echo
+    else
+        echo "$(red)$short$(reset)"
+        #cat "$log"
+        echo
+        echo '---------------------------'
+        echo "You still need to do $short"
+        die 'Keep working!'
+    fi
+}
+
+if [ $# -eq 3 ]; then
+    exec "$byos/helpers/harness.tcl" "$2"/"$3"-*.t "$sh_under_test"
+elif [ $# -eq 2 ]; then
+    do_stage "$2"
+    exit
+fi
+for stage in $byos/stage_[0-9]; do
+    do_stage "$stage"
+done
+echo
+
+echo "$(yellow)⸙ Congratulations! ⸙$(reset)"
+echo "Your shell passes all the tests.  Why don't you publish it,"
+echo "and let julian@cipht.net know how you liked this tutorial?"

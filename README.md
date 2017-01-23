@@ -1,7 +1,13 @@
+> All the broken  
+> Too many broken  
+> Shells  
+> In our shellmounds  
+ — [Grayceon, Shellmounds](https://grayceon.bandcamp.com/track/shellmounds)
+
 # Write Your Own Shell
 
-This is the material for a series of workshops I'm planning to run at
-my workplace on how to write a Unix shell.
+This is the material for a series of workshops I ran at my workplace
+on how to write a Unix shell.
 
 The focus is slightly more on building an interactive shell than a
 scripting-oriented shell, only because I think this is more
@@ -13,82 +19,173 @@ choices without discussing equally-valid alternatives.
 ## Why write your own shell?
 
 The shell is at the heart of Unix.  It's the glue that makes all the
-little Unix tools work together so well. Understanding it allows us to
-understand many important ideas about Unix, and writing our own is the
-best way to understand it.
+little Unix tools work together so well.  Understanding it allows us
+to understand many important ideas about Unix, and writing our own is
+the best way to understand it.
+
+This workshop has three goals:
+
+ - to give you a better understanding of how Unix processes work;
+   - this will make you better at designing and understanding software
+     that runs on Unix;
+ - to clarify some common misunderstandings of POSIX shells;
+   - this will make you more effective at using and scripting
+     ubiquitous shells like bash;
+ - to help you build a working implementation of a shell you can be
+   excited about working on.
+   - there are endless personal customizations you can make to your
+     own shell, and can help you think about how you interact with
+     your computer and how it might be different.
 
 ## How to use this repository
 
 I've tried to break this up into progressive stages that cover mostly
 orthogonal topics.  Each stage contains a description of the
 facilities that will be discussed, a list of manpages to consult, and
-a set of tests.
+a set of tests.  I've tried to also hint at some functionality that is
+fun but not necessary for the tests to pass.
+
+In the root of this repository, there is a script called `validate`;
+you can run all the tests against your shell-in-progress by specifying
+the path to your shell's executable, like this:
+
+``` shell
+$ ./validate ../mysh/mysh
+```
+
+It should tell you what stage you need to implement next.
+
+To run the tests, you will need [`prove`], which usually ships with
+perl, and [`expect`], which is usually in a package called `expect`,
+and a C compiler.  The way the tests are implemented is less robust
+than one might hope, but should suffice for our pedagogical goals.
 
 The tests assume you will be implementing a vanilla Bourne-flavored
-shell.  Feel free to experiment with alternate syntax, but if so,
-you'll need to adjust the tests.
+shell with some ksh influences.  Feel free to experiment with
+alternate syntax, but if so, you may need to adjust the tests.  Except
+where specifically noted, `bash` (and `ksh`) should pass all the
+tests, so you can "test the tests" that way.  (Try `./validate
+/bin/bash`; likewise, `cat` should fail all the tests.  Originally, I
+targeted plain `/bin/sh`, but I decided the material in stage 5 was
+too important.)
+
+[`prove`]: http://perldoc.perl.org/prove.html
+[`expect`]: http://wiki.tcl.tk/201
 
 # Stages
 
-## [fork/exec/wait](stage_1)
+## 1: [fork/exec/wait](stage_1.md)
 
-In which we discuss the basics of Unix processes and write the
-simplest possible shell.
+In which we discuss the basics of Unix processes, write the simplest
+possible shell, and then lay the foundations for the rest of the
+steps.
 
-## [files and pipes](stage_2)
+## 2: [files and pipes](stage_2.md)
 
 In which we add pipes and fd redirection to our shell.
 
-## [interactivity](stage_3)
-
-In which we take a detour into PTYs and termcaps to provide
-rudimentary interactive features for our shell.
-
-## [job control and signals](stage_4)
+## 3: [job control and signals](stage_3.md)
 
 In which we discuss signals and add support for ever-helpful chords
 like `^C`, `^\`, and `^Z`.
 
-## [environments, variables, and scripting](stage_5)
+## 4: [quoting and expansion](stage_4.md)
 
-In which we make our shell more customizable and start adding
-scripting constructs.
+In which we discuss environments, variables, globbing, and other
+oft-misunderstood concepts of the shell.
 
-## [completion and globbing](stage_6)
+## 5: [interactivity](stage_5.md)
 
-In which we add a few more features that tend to make the shell
-experience pleasant.
+In which we apply some polish to our shell to make it usable for
+interactive work.
+
+## &: [where to go next](next-steps.md)
+
+In which I prompt you to go further.
+
+# Shells written from this workshop
+
+I wrote [pedagoguish] to serve as the main example.  I'll link to some
+of the shells that were written as a result of this workshop here.
+
+[pedagoguish]: https://github.com/tokenrove/pedagoguish
 
 # Supplementary Material
 
 ## Documents
 
- - the [POSIX standard]
- - [Unix system programming in OCaml] shows the development of a simple shell
- - Advanced Unix Programming by Rochkind
- - APUE by Stevens
+ - [Advanced Programming in the Unix Environment] by Stevens covers
+   all this stuff and is a must-read.
+ - Chet Ramey describes [the Bourne-Again Shell] in [the Architecture
+   of Open Source Applications]; this is probably the best thing to
+   read to understand the structure of a real shell.
+ - Michael Kerrisk's [the Linux Programming Interface], though fairly
+   Linux-specific, has some great coverage of many of the topics we'll
+   touch on;
+ - [Unix system programming in OCaml] shows the development of a simple shell.
+ - [Advanced Unix Programming] by Rochkind; chapter 5 has a simple shell.
  - the [tour of the Almquist shell] is outdated but may help you find
    where some things are implemented in `dash` and other `ash`
-   descendants
+   descendants.
 
-[Unix system programming in OCaml]: https://ocaml.github.io/ocamlunix/
+### Other Tutorials
+
+I wrote this workshop partially because I felt other tutorials don't
+go far enough, but all of these are worth reading, especially if
+you're having trouble with a stage they cover:
+
+ - Stephen Brennan's [Write a Shell in C] is a more detailed look at
+   what is [stage 1](stage_1) here.
+ - Jesse Storimer's [A Unix Shell in Ruby] gets as far as pipes.
+ - Nelson Elhage's [Signalling and Job Control] covers some
+   of [stage 3](stage_3)'s material.
+
+### References
+
+ - the [POSIX standard] explains the expectations for the shell and
+   its utilities in reasonable detail.
+ - there are [POSIX conformance test suites] but they don't seem to be
+   available in convenient, non-restricted forms.
+
+[A Unix Shell in Ruby]: http://www.jstorimer.com/blogs/workingwithcode/7766107-a-unix-shell-in-ruby
+[Advanced Programming in the Unix Environment]: http://www.apuebook.com/
+[Advanced Unix Programming]: http://basepath.com/aup/
 [POSIX standard]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
+[Signalling and Job Control]: https://blog.nelhage.com/2010/01/a-brief-introduction-to-termios-signaling-and-job-control/
+[the Architecture of Open Source Applications]: http://www.aosabook.org/en/index.html
+[the Bourne-Again Shell]: http://www.aosabook.org/en/bash.html
+[the Linux Programming Interface]: http://man7.org/tlpi/index.html
 [tour of the Almquist shell]: http://git.kernel.org/cgit/utils/dash/dash.git/tree/src/TOUR
+[Unix system programming in OCaml]: https://ocaml.github.io/ocamlunix/
+[Write a Shell in C]: https://brennan.io/2015/01/16/write-a-shell-in-c/
+[POSIX conformance test suites]: https://www.opengroup.org/testing/testsuites/vscpcts2003.htm
 
 ## Shells to Examine
 
  - [busybox]: C; contains both ash and hush, and test suites.
  - [mksh]: C; non-interactive tests.
- - [rc]: C.
- - [zsh]: C.
+ - [rc]: C; fairly minimal.
+ - [zsh]: C; extremely maximal.
  - [fish]: C++11; has expect-based interactive tests.
  - [Thompson shell]: C; the original Unix shell; very minimal.
+ - [xonsh]: Python.
+ - [scsh]: Scheme and C; intended for scripting.
+ - [cash]: OCaml; based on scsh.
+ - [eshell]: Emacs Lisp.
+ - [oil]: Python and C++; has an extensive test suite.
+ - [oh]: Go.
 
 [busybox]: https://git.busybox.net/busybox/tree/shell
+[cash]: https://github.com/ShamoX/cash
+[eshell]: https://github.com/emacs-mirror/emacs/tree/master/lisp/eshell
 [fish]: https://github.com/fish-shell/fish-shell
 [mksh]: https://github.com/MirBSD/mksh
+[oh]: https://github.com/michaelmacinnis/oh
+[oil]: https://github.com/oilshell/oil
 [rc]: https://github.com/rakitzis/rc
+[scsh]: https://github.com/scheme/scsh
 [Thompson shell]: https://github.com/dspinellis/unix-history-repo/blob/Research-V5-Snapshot-Development/usr/source/s2/sh.c
+[xonsh]: http://xon.sh/
 [zsh]: https://github.com/zsh-users/zsh
 
 ## Links to Resources by Language
@@ -98,9 +195,47 @@ makes it attractive to write a shell in the former, to minimize
 frustration I suggest trying a higher-level language first.  Ideally
 the language will have good support for:
 
+- making POSIX syscalls
 - string manipulation
 - hash tables
-- making POSIX syscalls
+
+Languages that provide a lot of their own infrastructure with regards
+signals or threads may be much more difficult to use.
+
+### C++
+
+http://basepath.com/aup/ex/group__Ux.html
+
+### Common Lisp
+
+The most convenient library would be [iolib], which you can get
+through [Quicklisp].  You'll need to install `libfixposix` first.
+There's also [sb-posix] in `sbcl` for the daring.
+
+[iolib]: https://github.com/sionescu/iolib
+[Quicklisp]: https://www.quicklisp.org/
+[sb-posix]: http://www.sbcl.org/manual/#sb_002dposix
+
+### Haskell
+
+ - use [the unix package](https://hackage.haskell.org/package/unix)
+ - [Hell] might be a starting point
+
+[Hell]: https://github.com/chrisdone/hell/tree/master/src
+
+### Java / JVM-based languages
+
+You will probably run into issues related to the JVM, particularly
+with signals and forking, but as a starting point, you could do worse
+than loading libc with JNA.
+
+There's also [jtux](http://basepath.com/aup/jtux/index.htm).
+
+### Lua
+
+There are a variety of approaches, but [ljsyscall] looks promising.
+
+[ljsyscall]: https://github.com/justincormack/ljsyscall
 
 ### OCaml
 
@@ -108,4 +243,54 @@ the language will have good support for:
  - [lambda-term](https://github.com/diml/lambda-term)
  - [parsing with OCamllex and menhir](https://realworldocaml.org/v1/en/html/parsing-with-ocamllex-and-menhir.html)
 
-See also [Unix system programming in OCaml], [cash](https://github.com/ShamoX/cash).
+See also [Unix system programming in OCaml], [cash].
+
+### perl
+
+See `perlfunc(3perl)`; all the functions we want are at hand, usually
+with the same name.
+
+### Python
+
+Although Python provides higher-level abstractions like
+[`subprocess`], for the purposes of this workshop you probably want to
+use the functions in [`os`].
+
+[`os`]: https://docs.python.org/3/library/os.html
+[`subprocess`]: https://docs.python.org/3/library/subprocess.html
+
+### Racket
+
+The implementation seems a little too heavy to do this conveniently,
+but see the Scheme section below for alternatives.
+
+### Ruby
+
+`Process` has most of what you need.  You can use `Shellwords` but you
+decide if it's cheating or not.
+
+### Rust
+
+Although we use few enough calls that you could just create bindings
+directly, either
+[to libc with the FFI](https://doc.rust-lang.org/book/ffi.html) or by
+[directly making syscalls](https://crates.io/crates/syscall), for just
+getting something working, the [nix-rust] library should provide all
+the necessary facilities.
+
+[nix-rust]: https://github.com/nix-rust/nix
+
+### Scheme
+
+Guile already has all the calls you need; see
+[the POSIX section of the Guile manual].  Another approach would be to
+use something like [Chibi Scheme] with bindings to libc calls.
+
+[Chibi Scheme]: https://github.com/ashinn/chibi-scheme
+[the POSIX section of the Guile manual]: https://www.gnu.org/software/guile/manual/html_node/POSIX.html#POSIX
+
+### Tcl
+
+Although core Tcl doesn't provide what's necessary, `expect` probably
+does.  For example, Tcl doesn't have a way to `exec`, but expect
+provides `overlay` to do this.

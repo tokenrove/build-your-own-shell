@@ -1,0 +1,2 @@
+→ cat⏎^\⏎echo foo⏎
+← foo
