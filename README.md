@@ -6,6 +6,10 @@
 
 # Write Your Own Shell
 
+(**WIP**: please don't publish/promulgate this repo; I will be finishing
+things off and writing it up in the next few days, so just hold yer
+horses a few days and it'll be much better.)
+
 This is the material for a series of workshops I ran at my workplace
 on how to write a Unix shell.
 
