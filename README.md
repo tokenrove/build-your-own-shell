@@ -115,13 +115,14 @@ of the shells that were written as a result of this workshop here.
 ## Documents
 
  - [Advanced Programming in the Unix Environment] by Stevens covers
-   all this stuff and is a must-read.
+   all this stuff and is a must-read.  I call this *APUE* throughout
+   this tutorial.
  - Chet Ramey describes [the Bourne-Again Shell] in [the Architecture
    of Open Source Applications]; this is probably the best thing to
    read to understand the structure of a real shell.
  - Michael Kerrisk's [the Linux Programming Interface], though fairly
    Linux-specific, has some great coverage of many of the topics we'll
-   touch on;
+   touch on.  I call this *LPI* throughout this tutorial.
  - [Unix system programming in OCaml] shows the development of a simple shell.
  - [Advanced Unix Programming] by Rochkind; chapter 5 has a simple shell.
  - the [tour of the Almquist shell] is outdated but may help you find
@@ -135,10 +136,10 @@ go far enough, but all of these are worth reading, especially if
 you're having trouble with a stage they cover:
 
  - Stephen Brennan's [Write a Shell in C] is a more detailed look at
-   what is [stage 1](stage_1) here.
+   what is [stage 1](stage_1.md) here.
  - Jesse Storimer's [A Unix Shell in Ruby] gets as far as pipes.
  - Nelson Elhage's [Signalling and Job Control] covers some
-   of [stage 3](stage_3)'s material.
+   of [stage 3](stage_3.md)'s material.
 
 ### References
 
@@ -168,11 +169,11 @@ you're having trouble with a stage they cover:
  - [zsh]: C; extremely maximal.
  - [fish]: C++11; has expect-based interactive tests.
  - [Thompson shell]: C; the original Unix shell; very minimal.
- - [xonsh]: Python.
  - [scsh]: Scheme and C; intended for scripting.
  - [cash]: OCaml; based on scsh.
  - [eshell]: Emacs Lisp.
  - [oil]: Python and C++; has an extensive test suite.
+ - [xonsh]: Python.
  - [oh]: Go.
 
 [busybox]: https://git.busybox.net/busybox/tree/shell

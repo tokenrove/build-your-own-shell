@@ -2,7 +2,18 @@
 
 ## Dramatis Personae
 
-`dup2(2)`, `pipe(2)`, `open(2)`, `close(2)`
+ - [`dup2(2)`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/dup.html)
+   ([Linux](http://man7.org/linux/man-pages/man2/dup2.2.html),
+   [FreeBSD](https://www.freebsd.org/cgi/man.cgi?query=dup2&sektion=2&manpath=FreeBSD+11.1-RELEASE+and+Ports))
+ - [`pipe(2)`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/pipe.html)
+   ([Linux](http://man7.org/linux/man-pages/man2/pipe.2.html),
+    [FreeBSD](https://www.freebsd.org/cgi/man.cgi?query=pipe&sektion=2&manpath=FreeBSD+11.1-RELEASE+and+Ports))
+ - [`open(2)`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/open.html)
+   ([Linux](http://man7.org/linux/man-pages/man2/open.2.html),
+    [FreeBSD](https://www.freebsd.org/cgi/man.cgi?query=open&sektion=2&manpath=FreeBSD+11.1-RELEASE+and+Ports))
+ - [`close(2)`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/close.html)
+   ([Linux](http://man7.org/linux/man-pages/man2/close.2.html),
+    [FreeBSD](https://www.freebsd.org/cgi/man.cgi?query=close&sektion=2&manpath=FreeBSD+11.1-RELEASE+and+Ports))
 
 ## Prologue
 
@@ -12,23 +23,9 @@ correspond to standard input (stdin), output (stdout), and error
 feature: pipes and redirections.
 
 First, we'll add a bit more syntax.  This is where a simple parsing
-framework might start to be useful.
-
-You'll need to separate your input by occurrances of `|`, and for each
-command, find expressions of the form `n< path`, `n> path`, and `n>>
-path`, where `n` is an optional integer.
-
-If you'd like to handle quoting now, you might find it handy to look
-at the [POSIX shell grammar] specification.  I don't think you
-actually need to do this yet, though.  Just consider in your design
-that splitting on whitespace won't be enough.
-
-Note that you now may have to read multiple lines of input, if the
-last token read is a pipe.  Take this opportunity to also support `\`
-(backslash) as a line-continuation character.
-
-If you're planning to use a parser generator, consider
-[what Chet Ramey has to say] about bash and bison:
+framework might start to be useful.  If you're planning to use a
+parser generator, consider [what Chet Ramey has to say] about bash and
+bison:
 
 > One thing I've considered multiple times, but never done, is
 > rewriting the bash parser using straight recursive-descent rather
@@ -37,6 +34,21 @@ If you're planning to use a parser generator, consider
 > resolve that issue without changes that extensive. Were I starting
 > bash from scratch, I probably would have written a parser by
 > hand. It certainly would have made some things easier.
+
+You've already broken input up into lists; within each list, you have
+conceptually one *pipeline*, which might be several commands connected
+together.  You'll need to split these pipelines by occurrances of `|`,
+and for each command, find expressions of the form `n< path`, `n>
+path`, and `n>> path`, where `n` is an optional integer.  They don't
+get passed to the underlying command.
+
+If you'd like to handle quoting now, you might find it handy to look
+at the [POSIX shell grammar] specification.  I don't think you
+actually need to do this yet, though.  Just consider in your design
+that splitting on whitespace won't be enough.
+
+Note that if the last token read is a pipe, you'll need to continue
+reading the next line, just like with `\`, `||`, and `&&`.
 
 [POSIX shell grammar]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_10
 [what Chet Ramey has to say]: http://www.aosabook.org/en/bash.html
@@ -90,30 +102,59 @@ The following table summarizes the fd redirections:
 
 http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_07
 
+Note that `!`, which you added in stage 1, may appear only at the
+start of a pipeline, and affects the return value of the whole
+pipeline.
+
+(`hush` uses the term *squirrel* to refer to an fd that's been
+redirected where it wants to "squirrel away" the original fd, but I
+initially thought it referred to `<&` and `&>`, which look like
+squirrels; so now I'm calling those operators the squirrels.)
+
 ## Act 2
 
-Let's also add process substitution.  If you find `<(...)`, open a
-pipe as before, but replace the substitution with a reference to
-`/dev/fd/n`.
+Let's also add process substitution and command substitution.
 
-Although it's not related, now that you're handling balanced
-parenthesis syntax, let's add command substitution.  If you find
-`$(...)`, execute the program, capture its output in a string, and
-insert it in the argument list.  (Feel free to also handle backtick
-syntax.)
+If you find `$(...)`, execute the contents of the parentheses as shell
+input, capture its output in a string, and insert it in the argument
+list.  (Feel free to also handle backtick syntax.)
+
+If you find `<(...)`, open a pipe as before, but replace the
+substitution with a reference to `/dev/fd/n`.  This isn't POSIX sh,
+but it's really convenient.
 
 ## Epilogue
 
 ### CLOEXEC
 
-(why it's important, and why you can't use it here)
+You might have a bunch of files open in your shell, for example, files
+for maintaining history or configuration.  Your children shouldn't
+have to care about these files; file descriptors are a limited
+resource and most peolple wouldn't appreciate having that limit
+unnecessarily decreased just because you were lazy.
 
 How can you prevent your children from inheriting fds you don't want
-them to have?
+them to have?  Classically, people would loop over some number of fds,
+closing them, which is time-consuming and error-prone.  A moderately
+more recent idea is the `CLOEXEC` option on various fd-opening
+syscalls, which tells the operating system to close this fd when
+`execve` happens.  A lot of modern programming language libraries do
+this by default, so you may already be safe, but it's worth thinking
+about, particularly when writing a library that might open fds.
+
+Recently, Linux [added an `fdmap` syscall] that could be used for
+this.
+
+See Chris Siebenmann's [fork() and closing file descriptors] and
+CERT's [FIO22-C] (close files before spawning processes).
 
 You can use tools like `lsof` to debug problems with fd redirection.
 Under Linux, you can also try running `ls -l /proc/self/fd` inside
 your shell, with various redirections, and see what happens.
+
+[fork() and closing file descriptors]: https://utcc.utoronto.ca/~cks/space/blog/unix/ForkFDsAndRaces
+[FIO22-C]: https://www.securecoding.cert.org/confluence/display/c/FIO22-C.+Close+files+before+spawning+processes
+[added an `fdmap` syscall]: https://lwn.net/Articles/734709/
 
 ### Builtins
 
@@ -121,6 +162,7 @@ So far your builtins have been simple and haven't interacted much
 with commands.  What if we had a builtin in a pipeline?
 
 If you don't run the builtin in a subshell, the pipeline may stall.
+So you'll need to fork, but only when in a multi-command pipeline.
 
 ### posix_spawn
 
