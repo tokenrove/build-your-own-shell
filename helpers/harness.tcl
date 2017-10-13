@@ -96,7 +96,7 @@ seek $test_file 0 start
 log_user 0
 set send_slow { 10 .001 }
 setup_execution_environment
-spawn $shell
+if [catch {spawn $shell} err] {error $err}
 # waiting for first prompt can help
 set timeout 2
 expect -re .
@@ -136,6 +136,10 @@ proc expect_line {line} {
     return $rv
 }
 
+proc careful_send {m} {
+    if {[catch {send -s $m} err]} { error $err }
+}
+
 if {1 == $emit_tap} {puts "1..$n_tests"}
 while {![eof $test_file]} {
     gets $test_file command
@@ -143,7 +147,7 @@ while {![eof $test_file]} {
     if {0 == [string length [string trim $command]]} { continue }
     set line [expand [rest-of $command]]
     switch [string index $command 0] {
-        → {expect *; send -s $line; sleep 0.1}
+        → {expect *; careful_send $line; sleep 0.1}
         ← {is {1 == [expect_line $line]}}
         ≠ {is {0 == [expect_line $line]}}
         ✓ {error "sorry we decided not to do this $line_num"}

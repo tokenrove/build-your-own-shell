@@ -1,4 +1,6 @@
 → /bin/echo foo bar⏎
 ← foo bar
-→ ./helpers/echo-exit ./helpers/exit-status-0⏎
+→ tr a-z n-za-m⏎foo bar baz⏎^D
+← sbb one onm
+→ ./helpers/echo-exit ./helpers/successful-exit-status⏎
 ← 0

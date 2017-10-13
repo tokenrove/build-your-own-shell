@@ -17,6 +17,7 @@ if [ $# -lt 1 -o $# -gt 3 ]; then
 fi
 
 sh_under_test=$(which "$1")
+sh_under_test=$(cd -P -- "$(dirname -- "$sh_under_test")" && echo "$(pwd -P)/$(basename -- "$sh_under_test")")
 
 if [ ! -x "$sh_under_test" ]; then
     die "Can't execute $sh_under_test; not running any tests."
@@ -24,8 +25,7 @@ fi
 
 [ -x "$(which expect)" ] || die '"expect" is missing'
 
-us=$(readlink -f "$0")
-byos=$(dirname "$us")
+byos=$(dirname -- "$0")
 
 if [ ! -d "$byos/stage_1" ]; then
     die "Something went wrong; stage_1 missing in $byos."
@@ -42,9 +42,9 @@ trap 'rm -f $log' EXIT
 
 do_stage() {
     stage=$1
-    echo -n "$(yellow)$(basename $stage):$(reset) "
+    echo -n "$(yellow)$(basename "$stage"):$(reset) "
     for t in "$stage"/*.t; do
-        do_test $stage $t
+        do_test "$stage" "$t"
     done
     echo
 }
@@ -52,10 +52,11 @@ do_stage() {
 do_test() {
     short=$(basename "$1")
     test=$2
-    if timeout 30s "$byos"/helpers/harness.tcl "$test" "$sh_under_test" > $log; then
-        echo -n "$(green)$(basename $test)$(reset) "
+    if "$byos"/helpers/timeout 15 \
+              "$byos"/helpers/harness.tcl "$test" "$sh_under_test" > "$log"; then
+        echo -n "$(green)$(basename "$test")$(reset) "
     else
-        echo "$(red)$(basename $test)$(reset)"
+        echo "$(red)$(basename "$test")$(reset)"
         echo
         cat "$log"
         echo
@@ -66,12 +67,12 @@ do_test() {
 }
 
 if [ $# -eq 3 ]; then
-    exec "$byos/helpers/harness.tcl" "$2"/"$3"-*.t "$sh_under_test"
+    exec "$byos"/helpers/harness.tcl "$byos/$2/$3"*.t "$sh_under_test"
 elif [ $# -eq 2 ]; then
     do_stage "$2"
     exit
 fi
-for stage in $byos/stage_[0-9]; do
+for stage in "$byos"/stage_[0-9]; do
     do_stage "$stage"
 done
 echo

@@ -10,7 +10,7 @@
 ← ab
 → cat < /non-existent-file || echo foo⏎
 ← foo
-→ cat /non-existent-file 2>foo || wc -l <foo⏎
+→ cat /non-existent-file 2>foo || grep -c . <foo⏎
 ← 1
 → echo quux > foo && cat < foo⏎
 ← quux
