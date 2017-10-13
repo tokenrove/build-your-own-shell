@@ -42,13 +42,22 @@ trap 'rm -f $log' EXIT
 
 do_stage() {
     stage=$1
-    short=$(basename "$stage")
-    if timeout 30s prove --rules='seq=*.t' -e "$byos/helpers/harness.tcl" "$stage"/*.t :: "$sh_under_test"; then
-        echo "$(green)$short$(reset) "
-        echo
+    echo -n "$(yellow)$(basename $stage):$(reset) "
+    for t in "$stage"/*.t; do
+        do_test $stage $t
+    done
+    echo
+}
+
+do_test() {
+    short=$(basename "$1")
+    test=$2
+    if timeout 30s "$byos"/helpers/harness.tcl "$test" "$sh_under_test" > $log; then
+        echo -n "$(green)$(basename $test)$(reset) "
     else
-        echo "$(red)$short$(reset)"
-        #cat "$log"
+        echo "$(red)$(basename $test)$(reset)"
+        echo
+        cat "$log"
         echo
         echo '---------------------------'
         echo "You still need to do $short"

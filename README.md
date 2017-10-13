@@ -59,10 +59,10 @@ $ ./validate ../mysh/mysh
 
 It should tell you what stage you need to implement next.
 
-To run the tests, you will need [`prove`], which usually ships with
-perl, and [`expect`], which is usually in a package called `expect`,
-and a C compiler.  The way the tests are implemented is less robust
-than one might hope, but should suffice for our pedagogical goals.
+To run the tests, you will need [`expect`], which is usually in a
+package called `expect`, and a C compiler.  The way the tests are
+implemented is less robust than one might hope, but should suffice for
+our pedagogical goals.
 
 The tests assume you will be implementing a vanilla Bourne-flavored
 shell with some ksh influences.  Feel free to experiment with

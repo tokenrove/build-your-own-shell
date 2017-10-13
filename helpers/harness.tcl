@@ -77,6 +77,7 @@ if {2 != [llength $argv]} {
     error "Arguments are the test description file, and the path to your shell."
 }
 
+set emit_tap 0
 set test_path [lindex $argv 0]
 set shell [lindex $argv 1]
 set test_file [open $test_path]
@@ -105,13 +106,18 @@ set timeout 1
 set line_num 0
 set test_num 1
 proc ok {} {
-    global test_num test_path line_num
-    puts "ok $test_num # $test_path:$line_num"
+    global test_num test_path line_num emit_tap
+    if {1 == $emit_tap} {puts "ok $test_num # $test_path:$line_num"}
     incr test_num
 }
 proc not_ok {} {
-    global test_num test_path line_num
-    puts "not ok $test_num # $test_path:$line_num"
+    global test_num test_path line_num command emit_tap
+    if {0 == $emit_tap} {
+        puts "\x1b\[91m$command\x1b\[31m"
+        puts "failed at $test_path:$line_num\x1b\[m"
+    } else {
+        puts "not ok $test_num # $test_path:$line_num"
+    }
     incr test_num
     exit $test_num
 }
@@ -130,7 +136,7 @@ proc expect_line {line} {
     return $rv
 }
 
-puts "1..$n_tests"
+if {1 == $emit_tap} {puts "1..$n_tests"}
 while {![eof $test_file]} {
     gets $test_file command
     incr line_num
@@ -152,8 +158,9 @@ while {![eof $test_file]} {
         \# {}
         default {error "unexpected command $command"}
     }
+    if {0 == $emit_tap} {puts $command}
 }
 
 # Calling close causes zsh to exit unhappily, so we send ^D instead.
 send -s "\x04"
-if {0 != [wait_for_exit]} { error "shell didn't exit cleanly" }
+if {0 != [wait_for_exit]} {error "shell didn't exit cleanly"}
