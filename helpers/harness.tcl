@@ -68,6 +68,7 @@ proc setup_execution_environment {} {
 }
 
 proc wait_for_exit {} {
+    expect eof;         # seems to be needed for buffering issues on BSD
     foreach {pid spawn_id is_os_error code} [wait] break
     if {0 == $is_os_error} { return $code }
     not_ok
