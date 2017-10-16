@@ -1,5 +1,6 @@
-→ echo foo⏎
-← foo
-→ echo bar⏎
+→ echo-rot13 foo⏎
+← sbb
+→ echo-rot13 bar⏎
+← one
 → ⇑⇑⏎
-← foo
+← sbb

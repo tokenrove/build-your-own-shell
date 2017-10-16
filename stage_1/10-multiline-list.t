@@ -1,2 +1,2 @@
-→ true &&⏎false ||⏎echo foo ||⏎echo bar⏎
-← foo
+→ true &&⏎false ||⏎echo-rot13 foo ||⏎echo-rot13 bar⏎
+← sbb

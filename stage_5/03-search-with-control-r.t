@@ -1,7 +1,7 @@
 → true⏎
-→ echo foo⏎
-← foo
-→ echo bar⏎
-← bar
+→ echo-rot13 foo⏎
+← sbb
+→ echo-rot13 bar⏎
+← one
 → ^Rf⏎
-← foo
+← sbb

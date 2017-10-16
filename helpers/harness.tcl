@@ -95,7 +95,7 @@ while {![eof $test_file]} {
 seek $test_file 0 start
 
 log_user 0
-set send_slow { 10 .001 }
+set send_slow { 1 .01 }
 setup_execution_environment
 if [catch {spawn $shell} err] {error $err}
 # waiting for first prompt can help
@@ -125,12 +125,13 @@ proc not_ok {} {
 proc is {x} { uplevel 1 [list if $x {ok} {not_ok}]}
 
 proc expect_line {line} {
-    # NB: the \r\n at the start of the line here breaks fish, and
-    # makes this somewhat unreliable, but it's tricky to find an
-    # alternative that is as simple and stops cat from passing the
-    # tests.
+    # NB: this is fairly unreliable, and we should have some lint
+    # where we reject tests whose expected output would match the tail
+    # of their input.  There doesn't seem to be a better way to deal
+    # with the output and timing differences between shells, short of
+    # going full ptrace as mentioned previously.
     set rv [expect {
-        "\r\n$line\r\n" {return 1}
+        "$line\r\n" {return 1}
         default {return 0}
     }]
     expect *

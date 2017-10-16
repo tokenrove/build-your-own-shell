@@ -9,19 +9,33 @@ exec ${CC:-cc} ${CFLAGS:--Wall -Wextra -g} $0 -o $1
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-static void echo(int n)
+static char *awaited;
+
+static int int_of_signal_name(char *name)
 {
-    printf("%d\n", n);  /* safe-ish because we don't do anything else.  hah. */
+    if (!strcmp(name, "INT")) return SIGINT;
+    if (!strcmp(name, "TSTP")) return SIGTSTP;
+    if (!strcmp(name, "CONT")) return SIGCONT;
+    abort();
+}
+
+static void echo(int _)
+{
+    (void)_;
+    puts(awaited);  /* never do stuff like this in signal handlers. */
 }
 
 int main(int argc, char **argv)
 {
     struct sigaction action = { .sa_handler = echo };
     if (2 != argc) abort();
-    int sig = atoi(argv[1]);
+    int sig = int_of_signal_name(argv[1]);
+    awaited = argv[1];
     sigaction(sig, &action, NULL);
+    puts("ready");
     pause();
     return 0;
 }

@@ -3,5 +3,5 @@
 ← foobarbaz
 → cd /tmp; pwd⏎
 ← /tmp
-→ false; echo foo⏎
-← foo
+→ false; echo-rot13 foo⏎
+← sbb

@@ -1,12 +1,14 @@
-→ echo-signal 18⏎
+→ echo-signal CONT⏎
+← ready
 → ^Z
-→ echo foo⏎
-← foo
+→ echo-rot13 foo⏎
+← sbb
 → fg⏎
-← 18
-→ echo-signal 2 &⏎
-→ echo foo⏎
-← foo
+← CONT
+→ echo-signal INT &⏎
+← ready
+→ echo-rot13 foo⏎
+← sbb
 → fg⏎
 → ^C⏎
-← 2
+← INT

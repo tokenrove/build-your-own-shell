@@ -1,13 +1,15 @@
 # POSIX calls these AND Lists and OR Lists
-→ true && echo foo⏎
-← foo
-→ false && echo foo⏎
-≠ foo
-→ true && false && echo foo⏎
-≠ foo
-→ false || echo foo⏎
-← foo
-→ true || false || echo foo⏎
-≠ foo
-→ false || true && echo foo⏎
-← foo
+→ true && echo-rot13 foo⏎
+← sbb
+→ false && echo-rot13 foo⏎
+≠ sbb
+→ true && false && echo-rot13 foo⏎
+≠ sbb
+→ false || echo-rot13 foo⏎
+← sbb
+→ true || false || echo-rot13 foo⏎
+≠ sbb
+→ false || true && echo-rot13 foo⏎
+← sbb
+→ nonexistent-command || echo-rot13 zim⏎
+← mvz

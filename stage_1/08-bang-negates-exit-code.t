@@ -1,6 +1,6 @@
-→ ! false && echo foo⏎
-← foo
-→ ! true && echo foo⏎
-≠ foo
-→ ! true || echo foo⏎
-← foo
+→ ! false && echo-rot13 foo⏎
+← sbb
+→ ! true && echo-rot13 foo⏎
+≠ sbb
+→ ! true || echo-rot13 foo⏎
+← sbb

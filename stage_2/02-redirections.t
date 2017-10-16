@@ -8,8 +8,8 @@
 # NB echo -n isn't portable...
 → echo -n a > foo ; echo b >> foo ; cat foo⏎
 ← ab
-→ cat < /non-existent-file || echo foo⏎
-← foo
+→ cat < /non-existent-file || echo-rot13 foo⏎
+← sbb
 → cat /non-existent-file 2>foo || grep -c . <foo⏎
 ← 1
 → echo quux > foo && cat < foo⏎
