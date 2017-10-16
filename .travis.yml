@@ -1,0 +1,23 @@
+language: bash
+
+os:
+  - linux
+  - osx
+
+addons:
+  apt:
+    packages:
+    - expect
+    - mksh
+    - shellcheck
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew update; brew install expect mksh shellcheck; fi
+
+script:
+ - export CFLAGS='-std=c99 -D_POSIX_C_SOURCE -Wall -Wextra'
+ - ./validate bash
+ - ./validate mksh
+ - (if ./validate cat; then exit 1; fi) # travis doesn't like `- ! cmd`
+ - shellcheck ./validate
+ - (for i in stage_*/[0-9]*.t; do ./helpers/timeout 5 ./helpers/harness.tcl $i /bin/cat && exit 1; done; true)
