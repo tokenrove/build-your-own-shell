@@ -12,6 +12,11 @@ yellow() { attr 3; }
 reset() { tput me || tput sgr0; }
 die() { echo "$@"; exit 1; }
 
+# I'm legit guilty about the couple of disabled shellcheck warnings in
+# this file.  They are far from the biggest portability issues in this
+# code, though, sadly.
+#
+# shellcheck disable=SC2166
 if [ $# -lt 1 -o $# -gt 3 ]; then
     die "Usage: validate PATH_TO_SHELL [STAGE] [NUMBER]"
 fi
@@ -34,6 +39,7 @@ fi
 # build helpers
 for c in "$byos"/helpers/*.c; do
     exe="$byos"/helpers/"$(basename "$c" .c)"
+    # shellcheck disable=SC2166,SC2039
     if [ ! -x "$exe" -o "$c" -nt "$exe" ]; then "$c"; fi
 done
 
@@ -42,7 +48,7 @@ trap 'rm -f $log' EXIT
 
 do_stage() {
     stage=$1
-    echo -n "$(yellow)$(basename "$stage"):$(reset) "
+    printf '%s%s:%s ' "$(yellow)" "$(basename "$stage")" "$(reset)"
     for t in "$stage"/*.t; do
         do_test "$stage" "$t"
     done
@@ -54,7 +60,7 @@ do_test() {
     test=$2
     if "$byos"/helpers/timeout 15 \
               "$byos"/helpers/harness.tcl "$test" "$sh_under_test" > "$log"; then
-        echo -n "$(green)$(basename "$test")$(reset) "
+        printf '%s%s%s ' "$(green)" "$(basename "$test")" "$(reset)"
     else
         echo "$(red)$(basename "$test")$(reset)"
         echo
