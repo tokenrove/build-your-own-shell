@@ -19,6 +19,7 @@ static int int_of_signal_name(char *name)
     if (!strcmp(name, "INT")) return SIGINT;
     if (!strcmp(name, "TSTP")) return SIGTSTP;
     if (!strcmp(name, "CONT")) return SIGCONT;
+    if (!strcmp(name, "TERM")) return SIGTERM;
     abort();
 }
 
