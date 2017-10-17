@@ -4,11 +4,7 @@
 > In our shellmounds  
  — [Grayceon, Shellmounds](https://grayceon.bandcamp.com/track/shellmounds)
 
-# Write Your Own Shell
-
-(**WIP**: please don't publish/promulgate this repo; I will be finishing
-things off and writing it up in the next few days, so just hold yer
-horses a few days and it'll be much better.)
+# Build Your Own Shell
 
 This is the material for a series of workshops I ran at my workplace
 on how to write a Unix shell.
@@ -20,12 +16,16 @@ gratifying, even if it's less useful.
 Be warned that some of the suggestions and discussion make opinionated
 choices without discussing equally-valid alternatives.
 
+This is a work in progress and there may remain many infelicities.
+Patches Thoughtfully Considered.  Feel free to report issues via
+[Github](https://github.com/tokenrove/build-your-own-shell/issues).
+
 ## Why write your own shell?
 
 The shell is at the heart of Unix.  It's the glue that makes all the
-little Unix tools work together so well.  Understanding it allows us
-to understand many important ideas about Unix, and writing our own is
-the best way to understand it.
+little Unix tools work together so well.  Understanding it sheds light
+on many of Unix's important ideas, and writing our own is the best
+path to that understanding.
 
 This workshop has three goals:
 
@@ -40,6 +40,11 @@ This workshop has three goals:
    - there are endless personal customizations you can make to your
      own shell, and can help you think about how you interact with
      your computer and how it might be different.
+
+(some of this rationale is expanded on in my blog post, [Building
+shells with a grain of salt])
+
+[Building shells with a grain of salt]: https://www.cipht.net/posts/2017/10/17/build-your-own-shell.html
 
 ## How to use this repository
 
@@ -109,10 +114,9 @@ In which I prompt you to go further.
 
 # Shells written from this workshop
 
-I wrote [pedagoguish] to serve as the main example.  I'll link to some
-of the shells that were written as a result of this workshop here.
-
-[pedagoguish]: https://github.com/tokenrove/pedagoguish
+I'll link to some of the shells that were written as a result of this
+workshop here shortly, including a couple I wrote to serve as examples
+of different approaches.
 
 # Supplementary Material
 
@@ -176,6 +180,7 @@ you're having trouble with a stage they cover:
  - [mksh]: C; non-interactive tests.
  - [rc]: C; fairly minimal.
  - [zsh]: C; extremely maximal.
+ - [bash](https://savannah.gnu.org/git/?group=bash): C.
  - [fish]: C++11; has expect-based interactive tests.
  - [Thompson shell]: C; the original Unix shell; very minimal.
  - [scsh]: Scheme and C; intended for scripting.
