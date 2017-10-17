@@ -143,6 +143,8 @@ you're having trouble with a stage they cover:
    what is [stage 1](stage_1.md) here.
  - Jesse Storimer's [A Unix Shell in Ruby] gets as far as pipes;
  - Kamal Marhubi's [Let's Build a Shell] also goes about that far;
+ - glibc's [Implementing a Job Control Shell] shows specifically how
+   to implement job control;
  - Nelson Elhage's [Signalling and Job Control] covers some
    of [stage 3](stage_3.md)'s material.
 
@@ -156,6 +158,7 @@ you're having trouble with a stage they cover:
 [A Unix Shell in Ruby]: http://www.jstorimer.com/blogs/workingwithcode/7766107-a-unix-shell-in-ruby
 [Advanced Programming in the Unix Environment]: http://www.apuebook.com/
 [Advanced Unix Programming]: http://basepath.com/aup/
+[Implementing a Job Control Shell]: https://www.gnu.org/software/libc/manual/html_node/Implementing-a-Shell.html
 [Let's Build a Shell]: https://github.com/kamalmarhubi/shell-workshop
 [POSIX standard]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html
 [Signalling and Job Control]: https://blog.nelhage.com/2010/01/a-brief-introduction-to-termios-signaling-and-job-control/
