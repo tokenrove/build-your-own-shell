@@ -179,20 +179,18 @@ you're having trouble with a stage they cover:
  - [cash]: OCaml; based on scsh.
  - [eshell]: Emacs Lisp.
  - [oil]: Python and C++; has an extensive test suite.
- - [xonsh]: Python.
- - [oh]: Go.
+ - [xonsh](http://xon.sh/): Python.
+ - [oh](https://github.com/michaelmacinnis/oh): Go.
 
 [busybox]: https://git.busybox.net/busybox/tree/shell
 [cash]: https://github.com/ShamoX/cash
 [eshell]: https://github.com/emacs-mirror/emacs/tree/master/lisp/eshell
 [fish]: https://github.com/fish-shell/fish-shell
 [mksh]: https://github.com/MirBSD/mksh
-[oh]: https://github.com/michaelmacinnis/oh
 [oil]: https://github.com/oilshell/oil
 [rc]: https://github.com/rakitzis/rc
 [scsh]: https://github.com/scheme/scsh
 [Thompson shell]: https://github.com/dspinellis/unix-history-repo/blob/Research-V5-Snapshot-Development/usr/source/s2/sh.c
-[xonsh]: http://xon.sh/
 [zsh]: https://github.com/zsh-users/zsh
 
 ## Links to Resources by Language
