@@ -33,6 +33,11 @@ static void kill_em_all(int _)
 {
     (void)_;
     kill(pid, SIGTERM);
+    // In general, it's a Very Bad Idea to printf inside of a signal handler.
+    // However, since we're immediatly exiting, it is acceptable in this case.
+    // See https://www.securecoding.cert.org/confluence/display/c/SIG30-C.+Call+only+asynchronous-safe+functions+within+signal+handlers
+    // for more information on what isn't safe to do in signal handlers.
+    printf("Killing process %d due to timeout\n", pid);
     exit(1);
 }
 

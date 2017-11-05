@@ -168,5 +168,6 @@ while {![eof $test_file]} {
 }
 
 # Calling close causes zsh to exit unhappily, so we send ^D instead.
+puts "Sending ^D to shell to exit"
 send -s "\x04"
 if {0 != [wait_for_exit]} {error "shell didn't exit cleanly"}
