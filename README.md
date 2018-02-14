@@ -44,7 +44,7 @@ This workshop has three goals:
 (some of this rationale is expanded on in my blog post, [Building
 shells with a grain of salt])
 
-[Building shells with a grain of salt]: https://www.cipht.net/posts/2017/10/17/build-your-own-shell.html
+[Building shells with a grain of salt]: https://www.cipht.net/2017/10/17/build-your-own-shell.html
 
 ## How to use this repository
 
