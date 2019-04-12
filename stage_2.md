@@ -94,9 +94,9 @@ The following table summarizes the fd redirections:
 | operator | default fd | operation |
 | --- | --- | --- |
 | _[n]_`<`_f_ | 0 | open _f_ `O_RDONLY` |
-| _[n]_`>`_f_ | 1 | open _f_ `O_CREAT|O_TRUNC|O_WRONLY` |
-| _[n]_`>>`_f_ | 1 | open _f_ `O_CREAT|O_APPEND|O_WRONLY` |
-| _[n]_`<>`_f_ | 0 | open _f_ `O_CREAT|O_RDWR` |
+| _[n]_`>`_f_ | 1 | open _f_ `O_CREAT \| O_TRUNC \| O_WRONLY` |
+| _[n]_`>>`_f_ | 1 | open _f_ `O_CREAT \| O_APPEND \| O_WRONLY` |
+| _[n]_`<>`_f_ | 0 | open _f_ `O_CREAT \| O_RDWR` |
 | _[n]_`<&`_m_ | 0 | dup _n_ to _m_ (close if _m_ is `-`) |
 | _[n]_`&>`_m_ | 1 | dup _n_ to _m_ (close if _m_ is `-`) |
 
