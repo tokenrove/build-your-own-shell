@@ -39,7 +39,7 @@ You should
    itself instead of executing an external program), call it;
    otherwise
  - execute that as a command with space-delimited arguments;
- - repeat until you receive EOF on `stdin`.
+ - when you receive EOF on `stdin` instead of a command, exit.
 
 ### Executing a command
 
