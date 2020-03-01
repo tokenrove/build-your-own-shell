@@ -189,6 +189,7 @@ you're having trouble with a stage they cover:
  - [oil]: Python and C++; has an extensive test suite.
  - [xonsh](http://xon.sh/): Python.
  - [oh](https://github.com/michaelmacinnis/oh): Go.
+ - [FSH](https://github.com/ChrisPritchard/FSH): F#.
 
 [busybox]: https://git.busybox.net/busybox/tree/shell
 [cash]: https://github.com/ShamoX/cash
@@ -228,6 +229,10 @@ There's also [sb-posix] in `sbcl` for the daring.
 [iolib]: https://github.com/sionescu/iolib
 [Quicklisp]: https://www.quicklisp.org/
 [sb-posix]: http://www.sbcl.org/manual/#sb_002dposix
+
+### F#
+
+- [FSH](https://github.com/ChrisPritchard/FSH): F# Shell with integrated F# scripting. Like Bash or Powershell.
 
 ### Haskell
 
