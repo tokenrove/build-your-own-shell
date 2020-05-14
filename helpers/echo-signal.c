@@ -12,7 +12,7 @@ exec ${CC:-cc} ${CFLAGS:--Wall -Wextra -g} $0 -o $1
 #include <string.h>
 #include <unistd.h>
 
-static char *awaited;
+static sig_atomic_t got;
 
 static int int_of_signal_name(char *name)
 {
@@ -23,20 +23,16 @@ static int int_of_signal_name(char *name)
     abort();
 }
 
-static void echo(int _)
-{
-    (void)_;
-    puts(awaited);  /* never do stuff like this in signal handlers. */
-}
+static void handler(int n) { got = n; }
 
 int main(int argc, char **argv)
 {
-    struct sigaction action = { .sa_handler = echo };
+    struct sigaction action = { .sa_handler = handler };
     if (2 != argc) abort();
     int sig = int_of_signal_name(argv[1]);
-    awaited = argv[1];
     sigaction(sig, &action, NULL);
     puts("ready");
-    pause();
+    do { pause(); } while (sig != got);
+    puts(argv[1]);
     return 0;
 }
