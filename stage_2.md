@@ -102,6 +102,10 @@ The following table summarizes the fd redirections:
 
 http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_07
 
+Did you know about `<>`?  That's something I only learned when I wrote
+this workshop.  Note there's also `>|` which interacts with the
+shell's `noclobber` option, which I haven't bothered to implement.
+
 Note that `!`, which you added in stage 1, may appear only at the
 start of a pipeline, and affects the return value of the whole
 pipeline.
@@ -130,7 +134,7 @@ but it's really convenient.
 You might have a bunch of files open in your shell, for example, files
 for maintaining history or configuration.  Your children shouldn't
 have to care about these files; file descriptors are a limited
-resource and most peolple wouldn't appreciate having that limit
+resource and most people wouldn't appreciate having that limit
 unnecessarily decreased just because you were lazy.
 
 How can you prevent your children from inheriting fds you don't want
@@ -145,6 +149,13 @@ about, particularly when writing a library that might open fds.
 Recently, Linux [added an `fdmap` syscall] that could be used for
 this.
 
+Since I first wrote this, several languages have made `CLOEXEC` the
+default, which means you'll have to disable it on the file descriptors
+you actually want passed to the child.  For example [PEP-446], adopted
+in Python 3.4, makes `CLOEXEC` the default for all these reasons, so
+you'll need to `os.set_inheritable(fd, True)` explicitly on the file
+descriptors you actually want passed to the child.
+
 See Chris Siebenmann's [fork() and closing file descriptors] and
 CERT's [FIO22-C] (close files before spawning processes).
 
@@ -155,6 +166,7 @@ your shell, with various redirections, and see what happens.
 [fork() and closing file descriptors]: https://utcc.utoronto.ca/~cks/space/blog/unix/ForkFDsAndRaces
 [FIO22-C]: https://www.securecoding.cert.org/confluence/display/c/FIO22-C.+Close+files+before+spawning+processes
 [added an `fdmap` syscall]: https://lwn.net/Articles/734709/
+[PEP-446]: https://peps.python.org/pep-0446/
 
 ### Builtins
 

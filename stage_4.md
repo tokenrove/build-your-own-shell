@@ -127,9 +127,10 @@ pipe.
 There can actually be multiple heredocs on a line, but if you only
 want to implement one for now, I think that's ok.
 
-See [Heredocs].
+See [Heredocs], [How to Parse Here Documents].
 
 [Heredocs]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_07_04
+[How to Parse Here Documents]: http://www.oilshell.org/blog/2016/10/17.html
 
 ### Globbing
 

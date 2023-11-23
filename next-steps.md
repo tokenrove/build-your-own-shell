@@ -61,6 +61,8 @@ sh`?
  - GNU parallel is a very popular tool; is it possible to provide its
    major features directly in a shell?
 
+See also [`dgsh`](https://www2.dmst.aueb.gr/dds/sw/dgsh/).
+
 ## alternative uses of the shell
 
  - it's often been noted that `make` and `cron`, maybe with a dash of

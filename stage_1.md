@@ -164,7 +164,7 @@ lists*, respectively.  See section 2.9.3, [Lists].  We'll look at
 
 (If you want to add support for compound lists surrounded by braces,
 go ahead, but I didn't consider them important enough for an
-interactive shell to bother testing them.
+interactive shell to bother testing them.)
 
 [Lists]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_09_03
 
@@ -213,6 +213,12 @@ See [Token Recognition] in the standard.  Writing a tokenizer that
 follows this, ignoring the parts we aren't doing yet, will make
 writing your parser easier.  I'll expand this section more, shortly.
 
+You're faced with a tricky choice, here: I wrote this originally
+trying to put off quoting and other difficulties until later, just
+doing the simplest operations to get things going.  But after writing
+a few shells, I feel that getting proper parsing working is worth the
+hassle.  It's painful, but it makes everything else much easier.
+
 [Token Recognition]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_03
 
 ## Notes
@@ -260,6 +266,9 @@ See also https://ewontfix.com/7/
 
 Stevens, APUE, chapter 8.
 Kerrisk, LPI, chapters 24 through 28.
+
+A fork() in the road: https://www.microsoft.com/en-us/research/publication/a-fork-in-the-road/
+Introducing `io_uring_spawn`: https://lwn.net/Articles/908268/
 
 ["A much faster popen and system implementation for Linux"]: https://blog.famzah.net/2009/11/20/a-much-faster-popen-and-system-implementation-for-linux/
 [FreeBSD's posix_spawn]: https://github.com/freebsd/freebsd/blob/master/lib/libc/gen/posix_spawn.c

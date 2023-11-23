@@ -120,6 +120,14 @@ of different approaches.
 
 # Supplementary Material
 
+## Tools
+
+ - The [shtepper] is a great resource for understanding shell
+   execution.  You can input an expression and see in excruciating
+   detail how it should be evaluated.
+
+[shtepper](http://shell.cs.pomona.edu/shtepper)
+
 ## Documents
 
  - [Advanced Programming in the Unix Environment] by Stevens covers
@@ -158,6 +166,8 @@ you're having trouble with a stage they cover:
    its utilities in reasonable detail.
  - there are [POSIX conformance test suites] but they don't seem to be
    available in convenient, non-restricted forms.
+ - [yash's posix-shell-tests] are only runnable with yash, but the
+   tests themselves are full of useful ideas.
 
 [A Unix Shell in Ruby]: http://www.jstorimer.com/blogs/workingwithcode/7766107-a-unix-shell-in-ruby
 [Advanced Programming in the Unix Environment]: http://www.apuebook.com/
@@ -173,6 +183,7 @@ you're having trouble with a stage they cover:
 [Unix system programming in OCaml]: https://ocaml.github.io/ocamlunix/
 [Write a Shell in C]: https://brennan.io/2015/01/16/write-a-shell-in-c/
 [POSIX conformance test suites]: https://www.opengroup.org/testing/testsuites/vscpcts2003.htm
+[yash's posix-shell-tests]: https://github.com/posix-shell-tests/posix-shell-tests
 
 ## Shells to Examine
 
@@ -189,6 +200,7 @@ you're having trouble with a stage they cover:
  - [oil]: Python and C++; has an extensive test suite.
  - [xonsh](http://xon.sh/): Python.
  - [oh](https://github.com/michaelmacinnis/oh): Go.
+ - [yash-rs](https://github.com/magicant/yash-rs): Rust.
 
 [busybox]: https://git.busybox.net/busybox/tree/shell
 [cash]: https://github.com/ShamoX/cash
@@ -234,7 +246,7 @@ There's also [sb-posix] in `sbcl` for the daring.
  - use [the unix package](https://hackage.haskell.org/package/unix)
  - [Hell] might be a starting point
 
-[Hell]: https://github.com/chrisdone/hell/tree/master/src
+[Hell]: https://github.com/chrisdone/hell/
 
 ### Java / JVM-based languages
 
@@ -247,8 +259,10 @@ There's also [jtux](http://basepath.com/aup/jtux/index.htm).
 ### Lua
 
 There are a variety of approaches, but [ljsyscall] looks promising.
+[luaposix] might be sufficient.
 
 [ljsyscall]: https://github.com/justincormack/ljsyscall
+[luaposix]: https://github.com/luaposix/luaposix
 
 ### OCaml
 
@@ -269,8 +283,14 @@ Although Python provides higher-level abstractions like
 [`subprocess`], for the purposes of this workshop you probably want to
 use the functions in [`os`].
 
+Please note an important gotcha for stage 2!  Since [Python 3.4], fds
+have defaulted to non-inheritable, which means you'll need to
+explicitly `os.set_inheritable(fd, True)` any file descriptor you
+intend to pass down to a child.
+
 [`os`]: https://docs.python.org/3/library/os.html
 [`subprocess`]: https://docs.python.org/3/library/subprocess.html
+[Python 3.4]: https://peps.python.org/pep-0446/
 
 ### Racket
 
