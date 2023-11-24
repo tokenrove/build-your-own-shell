@@ -1,2 +1,2 @@
 → echo foo\⏎bar\⏎baz⏎
-← foobarbaz
+← foobarbaz\n

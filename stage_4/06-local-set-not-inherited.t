@@ -1,6 +1,6 @@
 → var=foo echo $var⏎
 ≠ foo
 → var=foo; echo $var⏎
-← foo
+↵ foo
 → sh -c 'echo $var'⏎
 ≠ foo

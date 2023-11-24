@@ -1,6 +1,8 @@
-→ echo-signal INT & sleep 1; echo-rot13 foo⏎
+→ echo-signal INT & sleep 0.5; echo-rot13 foo⏎
 ← ready
+⌛
 ← sbb
 → fg⏎
-→ ^C⏎
+⌛
+→ ^C
 ← INT

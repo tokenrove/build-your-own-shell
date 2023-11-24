@@ -1,10 +1,10 @@
 → pwd⏎
-≠ /tmp
+≠ /tmp\n
 → (cd /tmp; pwd)⏎
-← /tmp
+↵ /tmp\n
 → pwd⏎
-≠ /tmp
+≠ /tmp\n
 → (exit 1) && echo-rot13 foo⏎
-≠ sbb
+≠ sbb\n
 → (exit 0 && exit 1) && echo-rot13 foo⏎
-← sbb
+↵ sbb\n

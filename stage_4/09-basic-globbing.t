@@ -1,14 +1,14 @@
 → touch foo fob bar barf⏎
 → echo fo?⏎
-← fob foo
+↵ fob foo
 → echo f?o⏎
-← foo
+↵ foo
 → echo bar*⏎
-← bar barf
+↵ bar barf
 → echo *b*⏎
-← bar barf fob
+↵ bar barf fob
 # no expansion when quoted
 → echo "f*"⏎
-← f*
+↵ f*
 → echo fo'?'⏎
-← fo?
+↵ fo?

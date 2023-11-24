@@ -1,6 +1,6 @@
 → /bin/pwd⏎
-≠ /tmp
+≠ /tmp\n
 → cd /tmp⏎
 → cd ..⏎
 → /bin/pwd⏎
-← /
+↵ /\n

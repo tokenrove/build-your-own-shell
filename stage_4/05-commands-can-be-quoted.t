@@ -1,6 +1,6 @@
 → e'ch'o foo⏎
-← foo
+↵ foo
 → ''''""/"b"i'n/e'"c"ho''"" yup; true⏎
-← yup
+↵ yup
 → ""'echo'"-"rot1'3' yup⏎
-← lhc
+↵ lhc

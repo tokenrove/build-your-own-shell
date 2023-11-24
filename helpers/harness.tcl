@@ -19,9 +19,11 @@
 # ☠ ⇒ shell itself exits, with code
 # → ⇒ user input
 # ← ⇒ response on stdout
+# ↵ ⇒ response on stdout delimited by a CR or LF
 # ≠ ⇒ anything but this on stdout (at least one line)
 # ✓ ⇒ expect zero exit status of previous command (not implemented)
 # ✗ ⇒ expect nonzero exit status of previous command (not implemented)
+# ⌛ ⇒ wait a little extra (0.5 seconds)
 
 proc expand {s} {
     string map {
@@ -68,7 +70,11 @@ proc setup_execution_environment {} {
 }
 
 proc wait_for_exit {} {
-    expect eof;         # seems to be needed for buffering issues on BSD
+    # seems to be needed for buffering issues on BSD
+    expect {
+        eof {}
+        timeout {}
+    }
     foreach {pid spawn_id is_os_error code} [wait] break
     if {0 == $is_os_error} { return $code }
     not_ok
@@ -88,21 +94,20 @@ fconfigure $test_file -encoding utf-8
 set n_tests 0
 while {![eof $test_file]} {
     switch -re [string index [gets $test_file] 0] {
-        ←|≠|✓|✗|☠ {incr n_tests}
+        ←|↵|≠|✓|✗|☠ {incr n_tests}
         default {}
     }
 }
 seek $test_file 0 start
 
 log_user 0
-set send_slow { 1 .01 }
 setup_execution_environment
 if [catch {spawn $shell} err] {error $err}
-# waiting for first prompt can help
+# waiting a little extra for first prompt can help.  if your shell
+# emits no prompt, that's not very friendly.
+set timeout 3
+expect -re .+
 set timeout 2
-expect -re .
-expect *
-set timeout 1
 
 set line_num 0
 set test_num 1
@@ -124,6 +129,21 @@ proc not_ok {} {
 }
 proc is {x} { uplevel 1 [list if $x {ok} {not_ok}]}
 
+proc re_quote {s} {
+    string map {
+        \\ \\\\
+        ^ \\^
+        \$ \\\$
+        \[ \\\[
+        \( \\\(
+        . \\.
+        + \\+
+        * \\*
+        ? \\?
+        \{ \\\{
+    } $s
+}
+
 proc expect_line {line} {
     # NB: this is fairly unreliable, and we should have some lint
     # where we reject tests whose expected output would match the tail
@@ -131,15 +151,22 @@ proc expect_line {line} {
     # with the output and timing differences between shells, short of
     # going full ptrace as mentioned previously.
     set rv [expect {
-        "$line\r\n" {return 1}
+        -re $line {return 1}
         default {return 0}
     }]
     expect *
     return $rv
 }
 
+# The timing of sending a line can be tricky.  Shells are usually
+# sending their prompts to stderr, and so output to stdout can race
+# with that.  We used to use send -s (send_slow) here, but in practice
+# it seems unnecessary; what does seem necessary, is giving the shell
+# a little bit of time before we look at the output or send the next
+# line.
 proc careful_send {m} {
-    if {[catch {send -s $m} err]} { error $err }
+    if {[catch {send -- $m} err]} { error $err }
+    sleep 0.01
 }
 
 if {1 == $emit_tap} {puts "1..$n_tests"}
@@ -149,11 +176,13 @@ while {![eof $test_file]} {
     if {0 == [string length [string trim $command]]} { continue }
     set line [expand [rest-of $command]]
     switch [string index $command 0] {
-        → {expect *; careful_send $line; sleep 0.1}
-        ← {is {1 == [expect_line $line]}}
-        ≠ {is {0 == [expect_line $line]}}
+        → {expect *; careful_send $line}
+        ↵ {is {1 == [expect_line "\[\r\n][re_quote $line]"]}}
+        ← {is {1 == [expect_line [re_quote $line]]}}
+        ≠ {is {0 == [expect_line "\[\r\n][re_quote $line]"]}}
         ✓ {error "sorry we decided not to do this $line_num"}
         ✗ {error "sorry we decided not to do this $line_num"}
+        ⌛ {sleep 0.2}
         ☠ {
             is {$line eq [wait_for_exit]}
             if {$test_num <= $n_tests} {
@@ -168,5 +197,5 @@ while {![eof $test_file]} {
 }
 
 # Calling close causes zsh to exit unhappily, so we send ^D instead.
-send -s "\x04"
+sleep 0.1; send "\x04"
 if {0 != [wait_for_exit]} {error "shell didn't exit cleanly"}

@@ -1,22 +1,22 @@
 # we're started in a temp directory
 → echo zim > foo && cat foo | tr n-za-m a-z⏎
-← mvz
+↵ mvz
 → cat foo⏎
-← zim
+↵ zim
 → echo a > foo ; echo b > foo ; cat foo⏎
-← b
+↵ b
 # NB echo -n isn't portable...
 → echo -n a > foo ; echo b >> foo ; cat foo⏎
-← ab
+↵ ab
 → cat < /non-existent-file || echo-rot13 foo⏎
-← sbb
+↵ sbb
 → cat /non-existent-file 2>foo || grep -c . <foo⏎
-← 1
+↵ 1
 → echo quux > foo && cat < foo⏎
-← quux
+↵ quux
 → echo quux >foo && echo -n blah <>foo && cat <foo⏎
-← blahquux
+↵ blahquux
 → echo bar >foo && cat <>foo⏎
-← bar
+↵ bar
 → echo mitten >foo && echo -n k 1<>foo && cat foo⏎
-← kitten
+↵ kitten

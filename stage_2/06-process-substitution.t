@@ -1,2 +1,2 @@
-→ echo foo > bar && cat $(echo bar)⏎
-← foo
+→ echo-rot13 foo > bar && cat $(echo bar)⏎
+↵ sbb

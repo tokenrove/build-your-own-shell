@@ -1,7 +1,7 @@
 # POSIX calls these sequential lists
 → echo -n foo; echo -n bar; echo baz⏎
-← foobarbaz
+↵ foobarbaz
 → cd /tmp; pwd⏎
-← /tmp
+↵ /tmp
 → false; echo-rot13 foo⏎
-← sbb
+↵ sbb
