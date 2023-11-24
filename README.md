@@ -62,21 +62,34 @@ the path to your shell's executable, like this:
 $ ./validate ../mysh/mysh
 ```
 
-It should tell you what stage you need to implement next.
+It should tell you what stage you need to implement next.  You can
+also run a stage by itself, or an individual test:
+
+```shell
+$ ./validate ../mysh/mysh stage_2
+$ ./validate ../mysh/mysh stage_3 03
+```
 
 To run the tests, you will need [`expect`], which is usually in a
 package called `expect`, and a C compiler.  The way the tests are
 implemented is less robust than one might hope, but should suffice for
-our pedagogical goals.
+our pedagogical goals.  They are unfortunately somewhat timing
+sensitive, such that some tests will be flaky.  If you encounter a
+specifically flaky test, please let me know.
 
 The tests assume you will be implementing a vanilla Bourne-flavored
 shell with some ksh influences.  Feel free to experiment with
 alternate syntax, but if so, you may need to adjust the tests.  Except
 where specifically noted, `bash` (and `ksh`) should pass all the
 tests, so you can "test the tests" that way.  (Try `./validate
-/bin/bash`; likewise, `cat` should fail all the tests.  Originally, I
-targeted plain `/bin/sh`, but I decided the material in stage 5 was
-too important.)
+/bin/bash`.) Likewise, `cat` should fail all the tests.
+
+Originally, I targeted plain `/bin/sh`, but I decided the material in
+stage 5 was too important.  Still, `dash` will pass everything but
+stage 5.  There are also some other minor compatibility differences
+with some existing shells; you may run into them if you try them out.
+Any failure (of a supposedly POSIX shell) that isn't documented in the
+comments of a test should be reported as a bug.
 
 [`prove`]: http://perldoc.perl.org/prove.html
 [`expect`]: http://wiki.tcl.tk/201
