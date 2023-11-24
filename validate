@@ -12,17 +12,19 @@ yellow() { attr 3; }
 reset() { tput me || tput sgr0; }
 die() { echo "$@"; exit 1; }
 
-# I'm legit guilty about the couple of disabled shellcheck warnings in
-# this file.  They are far from the biggest portability issues in this
-# code, though, sadly.
-#
-# shellcheck disable=SC2166
-if [ $# -lt 1 -o $# -gt 3 ]; then
+while case "$1" in
+          -c) continue_p=true; true;;
+          -d) debug_p=true; true;;
+          *) false;;
+      esac; do shift; done
+
+if [ $# -lt 1 ] || [ $# -gt 3 ]; then
     die "Usage: validate PATH_TO_SHELL [STAGE] [NUMBER]"
 fi
 
 sh_under_test=$(which "$1")
-sh_under_test=$(cd -P -- "$(dirname -- "$sh_under_test")" && echo "$(pwd -P)/$(basename -- "$sh_under_test")")
+sh_under_test=$(cd -P -- "$(dirname -- "$sh_under_test")" &&
+                    echo "$(pwd -P)/$(basename -- "$sh_under_test")")
 
 if [ ! -x "$sh_under_test" ]; then
     die "Can't execute $sh_under_test; not running any tests."
@@ -39,8 +41,8 @@ fi
 # build helpers
 for c in "$byos"/helpers/*.c; do
     exe="$byos"/helpers/"$(basename "$c" .c)"
-    # shellcheck disable=SC2166,SC2039
-    if [ ! -x "$exe" -o "$c" -nt "$exe" ]; then "$c"; fi
+    # shellcheck disable=SC3013
+    if [ ! -x "$exe" ] || [ "$c" -nt "$exe" ]; then "$c"; fi
 done
 
 log=$(mktemp -t byos-validate.XXXXXX)
@@ -58,11 +60,14 @@ do_stage() {
 do_test() {
     short=$(basename "$1")
     test=$2
-    if "$byos"/helpers/timeout 15 \
-              "$byos"/helpers/harness.tcl "$test" "$sh_under_test" > "$log"; then
+    if >"$log" "$byos"/helpers/timeout 15 \
+        "$byos"/helpers/harness.tcl "$test" "$sh_under_test"
+    then
         printf '%s%s%s ' "$(green)" "$(basename "$test")" "$(reset)"
     else
-        echo "$(red)$(basename "$test")$(reset)"
+        printf '%s%s%s ' "$(red)" "$(basename "$test")" "$(reset)"
+        has_failures=true
+        if [ -n "${continue_p:-}" ]; then return; fi
         echo
         cat "$log"
         echo
@@ -73,7 +78,11 @@ do_test() {
 }
 
 if [ $# -eq 3 ]; then
-    exec "$byos"/helpers/harness.tcl "$byos/$2/$3"*.t "$sh_under_test"
+    if [ -n "${debug_p:-}" ]; then
+        exec expect -d "$byos"/helpers/harness.tcl "$byos/$2/$3"*.t "$sh_under_test"
+    else
+        exec "$byos"/helpers/harness.tcl "$byos/$2/$3"*.t "$sh_under_test"
+    fi
 elif [ $# -eq 2 ]; then
     do_stage "$2"
     exit
@@ -83,6 +92,8 @@ for stage in "$byos"/stage_[0-9]; do
 done
 echo
 
-echo "$(yellow)⸙ Congratulations! ⸙$(reset)"
-echo "Your shell passes all the tests.  Why don't you publish it,"
-echo "and let julian@cipht.net know how you liked this tutorial?"
+if [ -z "${has_failures:-}" ]; then
+    echo "$(yellow)⸙ Congratulations! ⸙$(reset)"
+    echo "Your shell passes all the tests.  Why don't you publish it,"
+    echo "and let julian@cipht.net know how you liked this tutorial?"
+fi
