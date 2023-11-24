@@ -12,8 +12,6 @@ exec ${CC:-cc} ${CFLAGS:--Wall -Wextra -g} $0 -o $1
 #include <string.h>
 #include <unistd.h>
 
-static sig_atomic_t got;
-
 static int int_of_signal_name(char *name)
 {
     if (!strcmp(name, "INT")) return SIGINT;
@@ -23,16 +21,18 @@ static int int_of_signal_name(char *name)
     abort();
 }
 
-static void handler(int n) { got = n; }
-
 int main(int argc, char **argv)
 {
-    struct sigaction action = { .sa_handler = handler };
     if (2 != argc) abort();
     int sig = int_of_signal_name(argv[1]);
-    sigaction(sig, &action, NULL);
-    puts("ready");
-    do { pause(); } while (sig != got);
+
+    sigset_t set, prev;
+    sigemptyset(&set);
+    sigaddset(&set, sig);
+    sigprocmask(SIG_BLOCK, &set, &prev);
+    write(1, "ready\n", 6);
+    int got;
+    do { sigwait(&set, &got); } while (sig != got);
     puts(argv[1]);
     return 0;
 }
