@@ -21,17 +21,24 @@ static int int_of_signal_name(char *name)
     abort();
 }
 
+
+static sig_atomic_t got;
+static void handler(int n) { got = n; }
+
 int main(int argc, char **argv)
 {
     if (2 != argc) abort();
     int sig = int_of_signal_name(argv[1]);
 
+    // This handler _should_ be unnecessary for these signals and
+    // sigwait, except that OpenBSD seems to consider TSTP and CONT as
+    // being ignored by default (though POSIX says otherwise).
+    sigaction(sig, &(struct sigaction){.sa_handler=handler}, NULL);
     sigset_t set, prev;
     sigemptyset(&set);
     sigaddset(&set, sig);
     sigprocmask(SIG_BLOCK, &set, &prev);
     write(1, "ready\n", 6);
-    int got;
     do { sigwait(&set, &got); } while (sig != got);
     puts(argv[1]);
     return 0;
