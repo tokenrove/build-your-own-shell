@@ -54,7 +54,7 @@ arguments; this replaces the running process (the child copy of the
 shell) with the new command.  So now we have both our shell and the
 command running, and the shell knows the process ID of the command.
 (See Patrick Mooney's talk [On Wings of
-exec(2)](https://systemswe.love/archive/minneapolis-2017/patrick-mooney)
+exec(2)](https://www.youtube.com/watch?v=xh9E3BvwqBs)
 for deeper details of what happens after we `execve`.)
 
 The parent now waits for the child to complete; we do this with
