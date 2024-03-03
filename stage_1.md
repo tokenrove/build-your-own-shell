@@ -158,6 +158,16 @@ false && echo foo || echo bar
 true || echo foo && echo bar
 ```
 
+This should echo "foobar":
+```
+true && printf foo || false && printf bar
+```
+
+This is equivalent to:
+```
+(((true && printf foo) || false) && printf bar)
+```
+
 The standard calls these *sequential lists*, *AND lists*, and *OR
 lists*, respectively.  See section 2.9.3, [Lists].  We'll look at
 *asynchronous lists* in stage 3.
